@@ -3,7 +3,7 @@ import { ScrollView, Text, View, TextInput, Button } from "react-native";
 import styles from "./styles";
 import Dashboard from "./Dashboard";
 import Task from "./Task";
-import initialGoalData from "./goalData"; 
+import initialGoalData from "./goalData";
 
 const App = () => {
   const [goals, setGoals] = useState([initialGoalData]);
@@ -14,11 +14,17 @@ const App = () => {
   const [newTaskDeadline, setNewTaskDeadline] = useState("");
 
   const handleToggleTask = (taskName) => {
-    const isCompleted = completedTasks.some((task) => task.task_name === taskName);
+    const isCompleted = completedTasks.some(
+      (task) => task.task_name === taskName
+    );
     if (isCompleted) {
       // Move task back to incomplete tasks
-      const newCompletedTasks = completedTasks.filter((task) => task.task_name !== taskName);
-      const taskToMove = completedTasks.find((task) => task.task_name === taskName);
+      const newCompletedTasks = completedTasks.filter(
+        (task) => task.task_name !== taskName
+      );
+      const taskToMove = completedTasks.find(
+        (task) => task.task_name === taskName
+      );
       setTasks([...tasks, taskToMove]);
       setCompletedTasks(newCompletedTasks);
     } else {
@@ -44,7 +50,9 @@ const App = () => {
 
   const handleRemoveTask = (taskName) => {
     setTasks(tasks.filter((task) => task.task_name !== taskName));
-    setCompletedTasks(completedTasks.filter((task) => task.task_name !== taskName));
+    setCompletedTasks(
+      completedTasks.filter((task) => task.task_name !== taskName)
+    );
   };
 
   const handleAddGoal = (goalName, goalDeadline) => {
@@ -63,25 +71,45 @@ const App = () => {
     setCompletedTasks([]);
   };
 
+  const isGoalDone = currentGoal.tasks.length > 0 && tasks.length === 0;
+
   return (
     <View style={styles.container}>
-      <Dashboard goals={goals} onAddGoal={handleAddGoal} onSelectGoal={handleSelectGoal} />
+      <Dashboard
+        goals={goals}
+        onAddGoal={handleAddGoal}
+        onSelectGoal={handleSelectGoal}
+      />
       <ScrollView contentContainerStyle={styles.mainContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>{currentGoal.goal_name}</Text>
+          <Text style={styles.title}>
+            {currentGoal.goal_name}{" "}
+            {isGoalDone && <Text style={styles.doneLabel}>(Done)</Text>}
+          </Text>
           <Text style={styles.deadline}>Deadline: {currentGoal.deadline}</Text>
         </View>
         <View style={styles.tasks}>
-          <Text style={styles.sectionTitle}>Incomplete Tasks</Text>
+          <Text style={styles.sectionTitle}>To do</Text>
           {tasks.map((task, index) => (
-            <Task key={index} task={task} onToggleTask={handleToggleTask} onRemoveTask={handleRemoveTask} />
+            <Task
+              key={index}
+              task={task}
+              onToggleTask={handleToggleTask}
+              onRemoveTask={handleRemoveTask}
+            />
           ))}
         </View>
         {completedTasks.length > 0 && (
           <View style={styles.tasks}>
-            <Text style={styles.sectionTitle}>Completed Tasks</Text>
+            <Text style={styles.sectionTitle}>Completed</Text>
             {completedTasks.map((task, index) => (
-              <Task key={index} task={task} onToggleTask={handleToggleTask} onRemoveTask={handleRemoveTask} completed />
+              <Task
+                key={index}
+                task={task}
+                onToggleTask={handleToggleTask}
+                onRemoveTask={handleRemoveTask}
+                completed
+              />
             ))}
           </View>
         )}
